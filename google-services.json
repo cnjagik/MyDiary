@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "571131086564",
+    "firebase_url": "https://mydiary-2c8e2.firebaseio.com",
+    "project_id": "mydiary-2c8e2",
+    "storage_bucket": "mydiary-2c8e2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:571131086564:android:a296503cadf0f286",
+        "android_client_info": {
+          "package_name": "ke.co.coansinternational.mydiary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "571131086564-rv2b230c6uvj362l7q2s1bp3q4v1fg7u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ke.co.coansinternational.mydiary",
+            "certificate_hash": "0d2a034ce9f33cd3b758fe5f3054f15460d0e376"
+          }
+        },
+        {
+          "client_id": "571131086564-g5q8qsvrppuhv4jdec8ns2nuc2od81o1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiZhVSwpg3ALfNPd62eT-Bki4csNlJcHM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "571131086564-g5q8qsvrppuhv4jdec8ns2nuc2od81o1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
