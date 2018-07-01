@@ -1,5 +1,6 @@
 package ke.co.coansinternational.mydiary;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -36,7 +37,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public static final String TAG = LoginActivity.class.getSimpleName();
     private static final int RC_SIGN_IN = 0;
     TextInputEditText username_me, password_me;
-    TextView forgotpassword, signUp, terms;
+    TextView forgotpassword, signUp;
     Button login_btn;
     ProgressDialog progressDialog;
     String username, password;
@@ -51,6 +52,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     utils utils;
     private FirebaseAuth mAuth;
 
+    @SuppressLint("CommitPrefEdits")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +60,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
         ke.co.coansinternational.mydiary.data.utils.getDatabase();
         getSupportActionBar().hide();
+        ke.co.coansinternational.mydiary.data.utils.getDatabase();
         mAuth = FirebaseAuth.getInstance();
         progressDialog = new ProgressDialog(this);
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

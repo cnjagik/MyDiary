@@ -13,8 +13,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -33,8 +38,11 @@ public class AddNote extends AppCompatActivity {
     Button saveb, discardb;
     DatabaseReference databaseReference;
     String Ndate, Nnotes, Ntitle, dateN;
-    String myNotes, MyTitles;
+    String myNotes, MyTitles, getStr;
     MyDairyPojo myDairyPojo;
+    Bundle bund;
+    FirebaseUser user;
+    FirebaseAuth mAuth;
     private Uri mCurrentNotesUri;
 
     @Override
@@ -47,12 +55,11 @@ public class AddNote extends AppCompatActivity {
         myTitle = findViewById(R.id.notesTitle);
         saveb = findViewById(R.id.saveb);
         discardb = findViewById(R.id.discardb);
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
         dateN = DateFormat.getDateInstance().format(new Date());
         datetoday.setText(dateN);
-        MyTitles = getIntent().getStringExtra("title");
-        myNotes = getIntent().getStringExtra("details");
-        myTitle.setText(MyTitles);
-        myNote.setText(myNotes);
+        bund = getIntent().getExtras();
         saveb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,8 +74,71 @@ public class AddNote extends AppCompatActivity {
                 startActivity(new Intent(AddNote.this, MainActivity.class));
             }
         });
+        onlinedataupdate();
+        localdataupdate();
     }
 
+    private void onlinedataupdate() {
+        if (bund != null) {
+            setTitle(getString(R.string.edit));
+            getStr = bund.getString("Key");
+            MyTitles = bund.getString("Title");
+            myNotes = bund.getString("Notes");
+            myTitle.setText(MyTitles);
+            myNote.setText(myNotes);
+        }
+    }
+
+    private void localdataupdate() {
+        Intent inter = getIntent();
+        mCurrentNotesUri = inter.getData();
+        if (mCurrentNotesUri == null) {
+            // This is new data, so change the app bar to say "Add"
+            setTitle(getString(R.string.add));
+        } else {
+            // Otherwise this is existing data, so change app bar to say "Edit data"
+            setTitle(getString(R.string.edit));
+            Bundle bund = getIntent().getExtras();
+            MyTitles = bund.getString("Title");
+            myNotes = bund.getString("Notes");
+            myTitle.setText(MyTitles);
+            myNote.setText(myNotes);
+        }
+    }
+
+    private void setFirebase() {
+        Ndate = datetoday.getText().toString().trim();
+        Ntitle = myTitle.getText().toString().trim();
+        Nnotes = myNote.getText().toString().trim();
+        myDairyPojo = new MyDairyPojo(Ndate, Ntitle, Nnotes);
+        myDairyPojo.setDairydate(Ndate);
+        myDairyPojo.setDiarytitle(Ntitle);
+        myDairyPojo.setDiarynote(Nnotes);
+        databaseReference.child("My Diary").child(user.getUid()).push().setValue(myDairyPojo);
+    }
+
+    private void UpdateFirebase() {
+        Ndate = datetoday.getText().toString().trim();
+        Ntitle = myTitle.getText().toString().trim();
+        Nnotes = myNote.getText().toString().trim();
+        myDairyPojo = new MyDairyPojo(Ndate, Ntitle, Nnotes);
+        myDairyPojo.setDairydate(Ndate);
+        myDairyPojo.setDiarytitle(Ntitle);
+        myDairyPojo.setDiarynote(Nnotes);
+        databaseReference.child("My Diary").child(user.getUid()).child(getStr).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                dataSnapshot.getRef().setValue(myDairyPojo);
+                Toast.makeText(AddNote.this, "Note Update", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
     public void SaveNote() {
         Ndate = datetoday.getText().toString().trim();
         Ntitle = myTitle.getText().toString().trim();
@@ -80,22 +150,31 @@ public class AddNote extends AppCompatActivity {
             myNote.setError("Required");
             return;
         }
-        setDataToFirebase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_DATE, Ndate);
         values.put(COLUMN_NOTE, Nnotes);
         values.put(COLUMN_TITLE, Ntitle);
         if (mCurrentNotesUri == null) {
-            // Insert a new incident into the provider, returning the content URI for the new incident.
-            @SuppressWarnings("ConstantConditions") Uri newUri = getContentResolver().insert(CONTENT_URI, values);
+            if (bund != null) {
+                if (user != null) {
+                    UpdateFirebase();
+                }
 
-            // Show a toast message depending on whether or not the insertion was successful
-            if (newUri == null) {
-                // If the new content URI is null, then there was an error with insertion.
-                Toast.makeText(this, "Error with saving data", Toast.LENGTH_SHORT).show();
             } else {
-                // Otherwise, the insertion was successful and we can display a toast with the row ID.
-                Toast.makeText(this, "Data saved successfully ", Toast.LENGTH_SHORT).show();
+                if (user != null) {
+                    setFirebase();
+                }
+                // Insert a new incident into the provider, returning the content URI for the new incident.
+                @SuppressWarnings("ConstantConditions") Uri newUri = getContentResolver().insert(CONTENT_URI, values);
+
+                // Show a toast message depending on whether or not the insertion was successful
+                if (newUri == null) {
+                    // If the new content URI is null, then there was an error with insertion.
+                    Toast.makeText(this, "Error with saving data", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Otherwise, the insertion was successful and we can display a toast with the row ID.
+                    Toast.makeText(this, "Data saved successfully ", Toast.LENGTH_SHORT).show();
+                }
             }
         } else {
             // Otherwise this is existing data, so update the table with content URI: mCurrentNotesUri
@@ -115,19 +194,7 @@ public class AddNote extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
             }
         }
-        myNote.setText("");
-        myTitle.setText("");
         startActivity(new Intent(AddNote.this, MainActivity.class));
     }
 
-    private void setDataToFirebase() {
-        Ndate = datetoday.getText().toString().trim();
-        Ntitle = myTitle.getText().toString().trim();
-        Nnotes = myNote.getText().toString().trim();
-        myDairyPojo = new MyDairyPojo(Ndate, Ntitle, Nnotes);
-        myDairyPojo.setDairydate(Ndate);
-        myDairyPojo.setDiarytitle(Ntitle);
-        myDairyPojo.setDiarynote(Nnotes);
-        databaseReference.child("My Diary").push().setValue(myDairyPojo);
-    }
 }
