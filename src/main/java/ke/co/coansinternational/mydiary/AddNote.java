@@ -139,6 +139,7 @@ public class AddNote extends AppCompatActivity {
         });
 
     }
+
     public void SaveNote() {
         Ndate = datetoday.getText().toString().trim();
         Ntitle = myTitle.getText().toString().trim();

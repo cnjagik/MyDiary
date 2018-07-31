@@ -82,13 +82,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         }
     }
 
-    public interface CustomItemClickListenList {
-        void onItemClick(View v, int position);
-    }
-
     @Override
     public int getItemCount() {
         return getData.size();
+    }
+
+    public interface CustomItemClickListenList {
+        void onItemClick(View v, int position);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

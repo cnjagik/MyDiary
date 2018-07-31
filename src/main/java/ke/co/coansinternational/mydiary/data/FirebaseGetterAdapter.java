@@ -58,13 +58,13 @@ public class FirebaseGetterAdapter extends RecyclerView.Adapter<FirebaseGetterAd
 
     }
 
-    public interface CustomItemClickListenList {
-        void onItemClick(View v, int position);
-    }
-
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    public interface CustomItemClickListenList {
+        void onItemClick(View v, int position);
     }
 
     class Viewholder extends RecyclerView.ViewHolder {

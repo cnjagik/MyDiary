@@ -53,9 +53,9 @@ public class MainActivity extends AppCompatActivity {
     FirebaseUser user;
     MyDairyPojo dataupload;
     RecyclerView.Adapter adapter;
+    String dateget, titleget, notesget, Fdate, Fnote, FTitle;
     private Uri mCurrentNotesUri;
     private FirebaseAuth mAuth;
-    String dateget, titleget, notesget, Fdate, Fnote, FTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
+
     public void getlocalDB() {
         getAllData.clear();
         recyclerAdapter = new RecyclerAdapter(getApplicationContext(), getAllData, new RecyclerAdapter.CustomItemClickListenList() {
@@ -197,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(recyclerAdapter);
         Collections.reverse(getAllData);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
