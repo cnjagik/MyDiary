@@ -7,11 +7,12 @@ import android.provider.BaseColumns;
 public class ContractClass {
     static final String CONTENT_AUTHORITY;
     static final String PATH_NOTES = "NoteProvider/MyNotes";
-    private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
-
     static {
         CONTENT_AUTHORITY = "ke.co.coansinternational.mydiary";
     }
+
+    private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+
 
     public ContractClass() {
     }
