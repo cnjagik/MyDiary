@@ -38,9 +38,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dp"
-                android:background="@color/colorPrimary"
                 android:gravity="center"
-                android:textColor="#fff" />
+                android:textColor="#ff00" />
 
             <TextView
                 android:id="@+id/datetoday"
